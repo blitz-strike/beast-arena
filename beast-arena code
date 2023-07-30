@@ -1,0 +1,2217 @@
+import random
+import time
+import datetime
+import replit
+import sys
+
+# i'm using replit's database in this project. need a database to run
+
+shards = replit.db.get('shards')
+npcstatus = replit.db.get('npcstatus')
+user = replit.db.get("user")
+allitems = replit.db.get("allitems")
+chamberitems = replit.db.get("chamberitems")
+monsunlocked = replit.db.get("monsunlocked")
+abilitiesunlocked = replit.db.get("abilitiesunlocked")
+
+
+if monsunlocked is None or monsunlocked == []:
+  monsunlocked = ['lobster', 'salamander', 'snail']
+if abilitiesunlocked is None or abilitiesunlocked == []:
+  abilitiesunlocked = ['none']
+if chamberitems is None:
+  chamberitems = [0, 0]
+if allitems is None:
+  allitems = ['none']
+
+if shards is None:
+  shards = 0
+
+if npcstatus is None:
+  npcstatus = []
+
+if user is None or user == '':
+  user = input("Enter Your username: ")
+
+  while True:
+    print(user)
+    rad = input('Hmm...Did i write that correctly?(yes/no): ')
+    if rad == 'yes':
+      break
+    elif rad == 'no':
+      user = input("Enter Your username: ")
+    else:
+      print("Enter only [yes] or [no].")
+
+replit.db['user'] = user
+abilitieslocked = ['regenerator', 'desperado', 'final stretch']
+poisoned = False
+botpoisoned = False
+burned = False
+botburned = False
+confused = False
+botconfused = False
+timeboost = datetime.datetime.now().hour
+timeboost = timeboost + 8
+allmoves = [
+  'detect', 'aqua rifle', 'night slash', 'mega horn','close encounter', 'dark aura', 'rocky blades', 'surf', 'scald',
+  'flamethrower', 'solar beam', 'fade', 'flare blitz', 'haunt', 'guard build',
+  'devour', 'twister', 'retap', 'merciless', 'sharpen',
+  'acidic slime', 'nightmare', 'shadow force', 'radiant force',
+  'flair switch', 'roost', 'soundboom', 'crush claw', 'spiking punch', 'luminary glare','smoking pound', 'body press', 'supplex', 'toxicating pound', 'gust', 'raw power'
+]
+def moveinfo(movename,movepower,moveaccuracy,movedesc = 'nothing special'):
+  print(movename+":")
+  print("power:", movepower)
+  print('accuracy:',moveaccuracy)
+  print(movedesc)
+if timeboost > 23:
+  timeboost = timeboost - 24
+print('Time:', timeboost, 'hours.')
+print("If you need help with the commands, just type 'help'\n")
+count = 0
+haunttick = 0
+chancemove = 0
+hpholdi = 0
+hpholdii = 0
+totalhpi = 0
+totalhpii = 0
+rad = 0
+npc = 0
+recovercount = 0
+#components#
+monslocked = [
+  'lobster', 'salamander', 'snail', 'rooster', 'owl'
+]
+abilitieslockeddupe = abilitieslocked[:]
+monslockeddupe = monslocked[:]
+for i in abilitieslockeddupe:
+  if i in abilitiesunlocked:
+    abilitieslocked.remove(i)
+
+for i in monslockeddupe:
+  if i in monsunlocked:
+    monslocked.remove(i)
+while True:
+
+  npc = input("Enter something: ")
+  if npc == 'help':
+    print(
+      "Commands:\n  'inv' or 'box' to see components you own\n  'shop' to check what you can buy\n \n 'battle [number]' to battle one of the npcs\n \n  'time chambers' to check what chambers are availiable at the moment\n \n 'prim [beast name]'' to use the respective forms if you have unlocked it. \n \n 'move info [name]' to see the description of moves. EG: 'move info crush claw' to view the description of 'crush claw' move"
+    )
+  elif npc == 'inv' or npc == 'box':
+    print("shards: {}".format(shards))
+    print("primordial shards: {}".format(chamberitems[0]))
+
+  elif npc == 'time chambers' or npc == 'time chamber':
+    print("TIME CHAMBERS\n--------------")
+    if 'lobster' in monsunlocked:
+      print('primordial lobster chamber\ncost: 1 prim shard & 50 shards')
+      print("status: ",end = '')
+      if 'prim lobster' in monsunlocked:
+        print("✅complete")
+      else:
+        print("❌incomplete")
+
+      print("npc 201\n")
+
+    if 'salamander' in monsunlocked:
+      print('primordial salamander chamber\ncost: 1 prim shard & 50 shards')
+      print("status: ",end = '')
+      if 'prim salamander' in monsunlocked:
+        print("✅complete")
+      else:
+        print("❌incomplete")
+      print("npc 202\n")
+
+    if 'snail' in monsunlocked:
+      print('primordial snail chamber\ncost: 1 prim shard & 50 shards')
+      print("status: ",end = '')
+      if 'prim snail' in monsunlocked:
+        print("✅complete")
+      else:
+        print("❌incomplete")
+      print("npc 203\n")
+
+    if 'owl' in monsunlocked:
+      print('primordial owl chamber\ncost: 1 prim shard & 50 shards')
+      print("status: ",end = '')
+      if 'prim owl' in monsunlocked:
+        print("✅complete")
+      else:
+        print("❌incomplete")
+      print("npc 204\n")
+
+    if 'rooster' in monsunlocked:
+      print('primordial rooster chamber\ncost: 1 prim shard & 50 shards')
+      print("status: ",end = '')
+      if 'prim rooster' in monsunlocked:
+        print("✅complete")
+      else:
+        print("❌incomplete")
+      print("npc 205\n")
+       
+
+  
+
+  elif npc == 'get meta mons':
+    monsunlocked.append("prim lobster")
+    monsunlocked.append("meta lobster")
+    monsunlocked.append("prim salamander")
+    monsunlocked.append("meta salamander")
+    monsunlocked.append("prim snail")
+    monsunlocked.append("meta snail")
+    shards += 9999999999
+    chamberitems = [9999, 9999]
+    replit.db['monsunlocked'] = monsunlocked
+    replit.db['shards'] = shards
+    replit.db['chamberitems'] = chamberitems
+
+#'detect', 'aqua rifle', 'night slash', 'mega horn', 'close encounter', 'dark aura', 'rocky blades', 'surf', 'scald','flamethrower', 'solar beam', 'fade', 'flare blitz', 'haunt', 'guard build','devour', 'twister', 'x-scissor', 'retap', 'merciless', 'sharpen','acidic slime', 'nightmare', 'vine burst', 'shadow force', 'radiant force','flair switch', 'roost', 'soundboom', 'crush claw', 'spiking punch', 'luminary glare','smoking pound', 'body press', 'supplex', 'toxicating pound'
+
+  elif npc.startswith("move info"): #move info part, huge chunk of same define blocks
+    npc = npc[10:-1] + npc[-1]
+    if npc not in allmoves:
+      print("Invalid move, it doesn't exist(yet)!")
+    else:
+      if npc == 'detect':
+        moveinfo('detect','-','-','shields the user from incoming damage, but cannot be used next turn')
+      elif npc == 'aqua rifle':
+        moveinfo("aqua rifle",'22','100','hits 2-5 times each turn, boosted when in metamorphic or primordial form')
+      elif npc == 'night slash':
+        moveinfo('night slash','75','100','33% chance for it to do double damage')
+      elif npc == 'mega horn':
+        moveinfo('mega horn','120','85')
+      elif npc == 'close encounter':
+        moveinfo('close encounter','135','100', "user's defence drops after using it")
+      elif npc == 'dark aura':
+        moveinfo('dark aura','80','100','does not calculate accuracy')
+      elif npc == 'rocky blades':
+        moveinfo('rocky blades',13,100,'hits 5-10 times each turn')
+      elif npc == 'surf':
+        moveinfo('surf',90,100)
+      elif npc == 'scald':
+        moveinfo('scald',80,100,'20% chance of burning the opponent')
+      elif npc == 'flamethrower':
+        moveinfo('flamethrower',90,100)
+      elif npc == 'solar beam':
+        moveinfo("solar beam",145,100,'charges up on first turn, attacks on second')
+      elif npc == 'fade':
+        moveinfo("fade",'-','-','decreases your defence but sharply boosts your attack')
+      elif npc == 'flare blitz':
+        moveinfo("flare blitz",140,100,'user takes 33% recoil, boosted when in metamorphic or primordial form')
+      elif npc == 'crush claw':
+        moveinfo('crush claw',70,100,"decreases opponent's defence slightly")
+      elif npc == 'haunt':
+        moveinfo('haunt', 30, 90, 'does damage constantly for a few turns')
+      elif npc == 'guard build':
+        moveinfo('guard build', 0, '-', 'increases your defence')
+      elif npc == 'devour':
+        moveinfo("devour", 0, '-','increases your defence and attack drastically in exchange for a bit of hp')
+      elif npc == 'twister':
+        moveinfo("twister", 110,90)
+      elif npc == 'retap':
+        moveinfo("retap", 60, 95,'power increases upon each use.')
+      elif npc == 'merciless':
+        moveinfo("merciless", 70, 90, 'power increases by 50% when opponent falls below 50% remaining hp.')
+      elif npc == 'sharpen':
+        moveinfo('sharpen','-','-', 'increases attack')
+
+  elif npc == 'reset':
+    rad = input("Are you sure?[yes/no]: ")
+    if rad == 'yes':
+      shards = 0
+      npcstatus = []
+      user = ''
+      chamberitems = [0,0]
+      allitems = ['none']
+      abilitiesunlocked = ['none']
+      monsunlocked = ['lobster', 'salamander', 'snail']
+      replit.db['npcstatus'] = npcstatus
+      replit.db['shards'] = shards
+      replit.db['user'] = user
+      replit.db['monsunlocked'] = monsunlocked
+      replit.db['chamberitems'] = chamberitems
+      replit.db['abilitiesunlocked'] = abilitiesunlocked
+      replit.db['allitems'] = allitems
+      sys.exit()
+
+  elif npc == 'shop': #viewing the shop
+    print(
+      "Held items:\n - converter          55 shards\n - chime              60 shards\n - cherry             90 shards \n - weak armor         60 shards \n - rigged dice        75 shards \n - new beast          100 shards \n - new ability        90 shards\nTo buy anything, type 'shop buy [item]' \neg: [shop buy converter] will get you a converter if you have enough shards to buy it"
+    )
+  elif npc[0:4] == 'shop':
+    if npc[5:8] == 'buy':
+      if npc[9:-1] + npc[-1] == 'converter':
+        if 'converter' in allitems:
+          print("You already own the converter!")
+        elif shards > 54:
+          shards = shards - 55
+          allitems.append("converter")
+          print("You successfully bought the converter for 55 shards!")
+        else:
+          print("You don't have enough shards to buy it!")
+
+      if npc[9:-1] + npc[-1] == 'new beast':
+        if len(monslocked) == 0:
+          print("You have unlocked all availiable beasts already!")
+        elif shards > 99:
+          shards = shards - 100
+          rad = random.choice(monslocked)
+          monsunlocked.append(rad)
+          monslocked.remove(rad)
+          replit.db['monsunlocked'] = monsunlocked
+
+          print("You successfully got a {} for 100 shards!".format(rad))
+        else:
+          print("You don't have enough shards to buy it!")
+
+      if npc[9:-1] + npc[-1] == 'new ability':
+        if len(abilitieslocked) == 0:
+          print("You have unlocked all availiable abilities already!")
+        elif shards > 89:
+          shards = shards - 90
+          rad = random.choice(abilitieslocked)
+          abilitiesunlocked.append(rad)
+          abilitieslocked.remove(rad)
+          replit.db['abilitiesunlocked'] = abilitiesunlocked
+          
+
+          print("You successfully got [{}] ability for 90 shards!".format(rad))
+        else:
+          print("You don't have enough shards to buy it!")
+
+      if npc[9:-1] + npc[-1] == 'chime':
+        if 'chime' in allitems:
+          print("You already own the chime!")
+        elif shards > 59:
+          shards = shards - 60
+          allitems.append("chime")
+          print("You successfully bought the chime for 60 shards!")
+        else:
+          print("You don't have enough shards to buy it!")
+
+      if npc[9:-1] + npc[-1] == 'rigged dice':
+        if 'rigged dice' in allitems:
+          print("You already own the rigged dice!")
+        elif shards > 74:
+          shards = shards - 75
+          allitems.append("rigged dice")
+          print("You successfully bought the rigged dice for 75 shards!")
+        else:
+          print("You don't have enough shards to buy it!")
+
+      
+      
+      if npc[9:-1] + npc[-1] == 'cherry':
+        if 'cherry' in allitems:
+          print("You already own the cherry!")
+        elif shards > 89:
+          shards = shards - 90
+          allitems.append("cherry")
+          print("You successfully bought the cherry for 90 shards!")
+        else:
+          print("You don't have enough shards to buy it!")
+
+      
+      
+      if npc[9:-1] + npc[-1] == 'weak armor':
+        if 'weak armor' in allitems:
+          print("You already own the weak armor!")
+        elif shards > 59:
+          shards = shards - 60
+          allitems.append("weak armor")
+          print("You successfully bought the weak armor for 60 shards!")
+        else:
+          print("You don't have enough shards to buy it!")
+
+      replit.db["allitems"] = allitems
+
+      replit.db["shards"] = shards
+
+    else:
+      print("Invalid use of [shop] command!")
+
+  elif npc[0:6] == 'battle' and npc[-1].isdigit():
+    if int(npc[-1]) <= 200 and int(npc[-1]) >= 1:
+      if npc == 'battle 1':
+        break
+      if npc == 'battle 2':
+        if '1beaten' in npcstatus:
+          break
+        else:
+          print("You need to beat npc {} to battle npc {}!".format(
+            int(npc[-1]) - 1, npc[-1]))
+      elif npc == 'battle 3':
+        if '2beaten' in npcstatus:
+          break
+        else:
+          print("You need to beat npc {} to battle npc {}!".format(
+            int(npc[-1]) - 1, npc[-1]))
+      elif npc == 'battle 4':
+        if '3beaten' in npcstatus:
+          break
+        else:
+          print("You need to beat npc {} to battle npc {}!".format(
+            int(npc[-1]) - 1, npc[-1]))
+      elif npc == 'battle 5':
+        if '4beaten' in npcstatus:
+          break
+        else:
+          print("You need to beat npc {} to battle npc {}!".format(
+            int(npc[-1]) - 1, npc[-1]))
+
+      elif npc == 'battle 6':
+        if '5beaten' in npcstatus:
+          break
+        else:
+          print("You need to beat npc {} to battle npc {}!".format(
+            int(npc[-1]) - 1, npc[-1]))
+
+      elif npc == 'battle 7':
+        if '6beaten' in npcstatus:
+          break
+        else:
+          print("You need to beat npc {} to battle npc {}!".format(
+            int(npc[-1]) - 1, npc[-1]))
+
+      elif npc == 'battle 8':
+        if '7beaten' in npcstatus:
+          break
+        else:
+          print("You need to beat npc {} to battle npc {}!".format(
+            int(npc[-1]) - 1, npc[-1]))
+
+      elif npc == 'battle 9':
+        if '8beaten' in npcstatus:
+          break
+        else:
+          print("You need to beat npc {} to battle npc {}!".format(
+            int(npc[-1]) - 1, npc[-1]))
+          
+      elif npc == 'battle 201':
+        if shards > 49 and chamberitems[0] > 0:
+          shards -= 50
+          chamberitems[0] -= 1
+          replit.db['shards'] = shards
+          replit.db['chamberitems'] = chamberitems
+          break
+        else:
+          print(
+            "You need at least 50 shards and a primordial shard to attempt this time chamber!"
+          )
+
+      elif npc == 'battle 202':
+        if shards > 49 and chamberitems[0] > 0:
+          shards -= 50
+          chamberitems[0] -= 1
+          replit.db['shards'] = shards
+          replit.db['chamberitems'] = chamberitems
+          break
+        else:
+          print(
+            "You need at least 50 shards and a primordial shard to attempt this time chamber!"
+          )
+
+      elif npc == 'battle 203':
+        if shards > 49 and chamberitems[0] > 0:
+          shards -= 50
+          chamberitems[0] -= 1
+          replit.db['shards'] = shards
+          replit.db['chamberitems'] = chamberitems
+          break
+        else:
+          print(
+            "You need at least 50 shards and a primordial shard to attempt this time chamber!"
+          )
+
+      elif npc == 'battle 210':
+        if shards > 49 and chamberitems[0] > 0 and chamberitems[1] > 1:
+          shards -= 50
+          chamberitems[0] -= 2
+          replit.db['shards'] = shards
+          replit.db['chamberitems'] = chamberitems
+          break
+        else:
+          print(
+            "You need at least 50 shards and 2 primordial shards to attempt this time chamber!"
+          )
+
+    else:
+      print("Invalid input, type [help] to see all availiable inputs!")
+  else:
+    print("Invalid input, type [help] to see all availiable inputs!")
+
+print("Beasts list:\n")
+print(
+  "lobster: water/dark.\nsignature move: aqua rifle\nattack boosted in the afternoon to midnight\nprim: ",
+  end='')
+if 'prim lobster' in monsunlocked:
+  print("✅")
+else:
+  print("❌")
+
+print('')
+print(
+  "salamander: fire/ghost\nsignature move: flare blitz\nflare blitz deals more dmg from day until noon\nprim",
+  end='')
+if 'prim salamander' in monsunlocked:
+  print("✅")
+else:
+  print("❌")
+print('')
+
+print(
+  "snail: ground/grass\nsignature move: devour\ndefence and hp boosted in the day until noon\nprim",
+  end='')
+if 'prim snail' in monsunlocked:
+  print("✅")
+else:
+  print("❌")
+print('')
+
+if 'owl' in monsunlocked:
+  print(
+    "owl: flying/dark.\nsignature move: shadow force\nattack boosted from midnight to day\nprim",
+    end='')
+  if 'prim owl' in monsunlocked:
+    print("✅")
+  else:
+    print("❌")
+  print('')
+if 'rooster' in monsunlocked:
+  print(
+    "rooster: flying/fairy.\nsignature move: radiant force\nattack boosted from day to afternoon\nprim",
+    end='')
+  if 'prim rooster' in monsunlocked:
+    print("✅")
+  else:
+    print("❌")
+  print('')
+
+if 'rabbit' in monsunlocked:
+  print(
+    "rabbit: ground/electric.\nsignature move: outspeed\nattack boosted from day to afternoon\nprim",
+    end='')
+  if 'prim rabbit' in monsunlocked:
+    print("✅")
+  else:
+    print("❌")
+  print('')
+
+print("Day: 00:00\nNoon: 15:00\nmidnight: 23:59\n")
+
+print("")
+
+roosttick = False
+mon = input("choose a beast: ")
+dotline = ''
+moves = []
+hpi = 0
+hpii = 0
+defi = 0
+defii = 0
+spei = 0
+speii = 0
+atki = 0
+atkii = 0
+evai = 1
+evaii = 1
+dmg = 0
+botdmg = 0
+power = 0
+mod = 1
+botmod = 1
+acc = 0
+atktext = ''
+terrain = 'none'
+weatherboosted = False
+botweatherboosted = False
+movecharge = False
+nightmarelock = ''
+nightmaretick = -2
+detectcheck = False
+botdetectcheck = False
+detectindex = 0
+#dmg = (((((2 * 100) / 5) + 2) * movepower * atki / defii) /50 + 2) * mod
+priority = 0
+botmovecharge = False
+movetype = ''
+abilitieslocked = ['regenerator', 'desperado', 'soul fusion']
+ability = ''
+retap = 0
+botretap = 0
+
+movecondition = ''  #contact / ranged / status
+typing = []
+bottyping = []
+validmoves = []
+helditem = ''
+moveset = []
+move = ''
+
+#bot set up
+validbotmons = ['fox', 'eagle', 'lion', 'jellyfish', 'spider','gorilla', 'seagull', 'whale', 'shark']
+
+if npc == 'battle 201':
+  botmon = 'levithian'
+
+elif npc == 'battle 210':
+  botmon = 'rabbit'
+  
+elif npc == 'battle 202':
+  botmon = 'phoenix'
+
+elif npc == 'battle 203':
+  botmon = 'tree spirit'
+
+else:
+  npc = npc[7:-1] + npc[-1]
+  if int(npc) < 201:
+    botmon = validbotmons[int(npc[-1]) - 1]
+botresists = []
+botweaknesses = []
+botvalidmoves = []
+botmove = ''
+
+if botmon == 'fox':
+  botvalidmoves.extend(['flamethrower', 'dark aura'])
+  speii = 95
+  atkii = 79
+  defii = 55
+  hpii = 957
+  bottyping.extend(['dark'])
+elif botmon == 'eagle':
+  botvalidmoves.extend(['darkest night', 'twister', 'sharpen', 'detect'])
+  speii = 105
+  atkii = 100
+  defii = 89
+  hpii = 899
+  bottyping.extend(['flying', 'dark'])
+elif botmon == 'lion':
+  botvalidmoves.extend(
+    ['detect', 'flamethrower', 'close encounter', 'merciless'])
+  speii = 90
+  atkii = 131
+  defii = 82
+  hpii = 921
+  bottyping.extend(['fire', 'fighting'])
+elif botmon == 'jellyfish':
+  botvalidmoves.extend(['surf', 'merciless', 'acidic slime','acidic slime', 'detect'])
+  speii = 35
+  atkii = 80
+  defii = 121
+  hpii = 969
+  bottyping.extend(['water', 'poison'])
+elif botmon == 'spider':
+  botvalidmoves.extend(["retap", 'mega horn', 'twister'])
+  speii = 125
+  atkii = 175
+  defii = 79
+  hpii = 767
+  bottyping.extend(['bug'])
+
+elif botmon == 'gorilla':
+  botvalidmoves.extend(['smoking pound', 'body press', 'supplex'])
+  speii = 105
+  atkii = 75
+  defii = 130
+  hpii = 1092
+  bottyping.extend(['fighting', 'grass'])
+
+elif botmon == 'seagull':
+  botvalidmoves.extend(['gust', 'scald', 'twister', 'guard build'])
+  speii = 105
+  atkii = 70
+  defii = 10
+  hpii = 20000
+  bottyping.extend(['flying', 'water'])
+
+elif botmon == 'whale':
+  botvalidmoves.extend(['scald', 'body press', 'guard build'])
+  speii = 66
+  atkii = 55
+  defii = 155
+  hpii = 1237
+  bottyping.extend(['water'])
+  
+elif botmon == 'levithian':
+  botvalidmoves.extend(["sharpen", 'sharpen', 'rain dance', 'twister', 'scald'])
+  speii = 95
+  atkii = 130
+  defii = 108
+  hpii = 3000
+  bottyping.extend(['water'])
+
+elif botmon == 'phoenix':
+  botvalidmoves.extend(["fire dance", 'fire spin', 'whirlwind', 'sharpen'])
+  speii = 130
+  atkii = 135
+  defii = 95
+  hpii = 3000
+  bottyping.extend(['fire', 'flying'])
+
+elif botmon == 'tree spirit':
+  botvalidmoves.extend(['absorb', 'amnesia', 'merciless', 'dark aura'])
+  speii = 50
+  atkii = 165
+  defii = 120
+  hpii = 3000
+  bottyping.extend(['grass', 'poison'])
+
+elif botmon == 'shark':
+  botvalidmoves.extend(['crunch', 'intimidate', 'jet rush','amnesia'])
+  speii = 120
+  atkii = 160
+  defii = 95
+  hpii = 1300
+  bottyping.extend(['dark', 'water'])
+
+
+print('')
+while True:
+  if mon in monsunlocked:
+    for i in allitems:
+      print(i, end=' | ')
+      print('')
+    while True:
+      helditem = input("Choose a held item(enter name): ")
+      if helditem in allitems:
+        break
+      else:
+        print("invalid held item, choose again.")
+    break
+  else:
+    if mon != '':
+      if 'prim' in mon:
+        print("Type 'prim [beast name]' to use the respective forms.")
+      else:
+        print("Invalid name, or you don't own that beast")
+    mon = input("choose a beast: ")
+
+if mon == "lobster":
+  validmoves.extend([
+    'aqua rifle', 'detect', 'night slash', 'scald', 'close encounter',
+    'fade', 'merciless', 'darkest night', 'crush claw', 'The x-event'
+  ])
+  hpi = 975
+  defi = 86
+  atki = 123
+  spei = 75
+  typing.extend(['water', 'dark'])
+  if timeboost >= 12:
+    mod *= 1.15
+    
+elif mon == "prim lobster":
+  validmoves.extend([
+     'aqua rifle', 'detect', 'night slash', 'scald', 'close encounter',
+    'fade', 'merciless', 'darkest night', 'crush claw'
+  ])
+  hpi = 990
+  defi = 99
+  atki = 154
+  spei = 77
+  typing.extend(['water', 'dark'])
+  if timeboost >= 12:
+    mod *= 1.15
+
+elif mon == "salamander":
+  validmoves.extend(
+    ['haunt', 'flare blitz', 'fade', 'night slash', 'detect', 'reversal','spiking punch', 'dark aura'])
+  atki = 110
+  hpi = 1080
+  defi = 69
+  spei = 122
+
+elif mon == "prim salamander":
+  validmoves.extend(['haunt', 'flare blitz', 'fade', 'night slash', 'detect', 'reversal','spiking punch', 'dark aura'])
+  atki = 139
+  hpi = 1199
+  defi = 87
+  spei = 127
+
+elif mon == "snail":
+  atki = 47
+  hpi = 1098
+  defi = 105
+  spei = 11
+  if timeboost > 0 and timeboost <= 15:
+    defi += 16
+    hpi += 174
+  validmoves.extend([
+    'devour', 'guard build', 'solar beam', 'mega horn', 'retap', 'recover',
+    'acidic slime', 'flair switch', 'raw power'
+  ])
+
+elif mon == "prim snail":
+  atki = 77
+  hpi = 1209
+  defi = 141
+  spei = 11
+  if timeboost > 0 and timeboost <= 15:
+    defi += 16
+    hpi += 174
+  validmoves.extend([
+    'devour', 'guard build', 'solar beam', 'mega horn', 'retap', 'recover',
+    'acidic slime', 'flair switch', 'raw power'
+  ])
+
+elif mon == "rabbit":
+  atki = 70
+  hpi = 859
+  defi = 78
+  spei = 141
+  if timeboost > 0 and timeboost <= 15:
+    defi += 16
+    hpi += 174
+  validmoves.extend(['outspeed', 'clear weather', 'detect', 'rising talent', 'roost', 'detect', 'raw power'])
+
+elif mon == "owl":
+  atki = 111
+  hpi = 999
+  defi = 80
+  spei = 111
+  if timeboost > 15 and timeboost < 23:
+    atki += 11
+    hpi += 71
+  validmoves.extend([
+    'shadow force', 'twister', 'aeroblade', 'gambit', 'dark aura', 'roost',
+    'nightmare', 'detect'
+  ])
+
+elif mon == "prim owl":
+  atki = 148
+  hpi = 1111
+  defi = 102
+  spei = 125
+  if timeboost > 15 and timeboost < 23:
+    atki += 11
+    hpi += 71
+  validmoves.extend([
+    'shadow force', 'twister', 'aeroblade', 'gambit', 'dark aura', 'roost',
+    'nightmare', 'detect'
+  ])
+
+elif mon == "rooster":
+  atki = 101
+  hpi = 999
+  defi = 90
+  spei = 111
+  if timeboost > 0 and timeboost < 15:
+    defi += 16
+    hpi += 174
+  validmoves.extend(['radiant force', 'retap', 'roost', 'soundboom', 'fade', 'crush claw', 'luminary glare','misty terrain'])
+
+elif mon == "prim rooster":
+  atki = 138
+  hpi = 1111
+  defi = 121
+  spei = 120
+  if timeboost > 0 and timeboost < 15:
+    defi += 16
+    hpi += 174
+  validmoves.extend(['radiant force', 'retap', 'roost', 'soundboom', 'fade', 'crush claw', 'luminary glare','misty terrain'])
+
+
+
+rad = 0
+for i in abilitiesunlocked:
+  rad += 1
+  print(str(rad) + '.', i)
+while ability not in abilitiesunlocked:
+  ability = input("Select an ability (type NAME): ")
+  if ability not in abilitiesunlocked:
+    print("Invalid ability name")
+    
+rad = 0
+for i in validmoves:
+  rad += 1
+  print(str(rad)+'.', i)
+while len(moveset) < 4:
+  moveselect = (input("pick out 4 moves from the list above(1 number at a time): "))
+  if not moveselect.isdigit():
+    print("invalid NUMBER, select another.")
+
+  elif int(moveselect) - 1 >= len(validmoves):
+    print("invalid move number")
+  elif int(moveselect) - 1 < len(validmoves):
+    if validmoves[int(moveselect) - 1] in moveset:
+      print("cannot have repeating moves")
+    else:
+      moveset.append(validmoves[int(moveselect) - 1])
+  print(moveset)
+
+totalhpi = hpi
+totalhpii = hpii
+
+
+def tmove(power, accuracy, temphp):
+  acc = random.randint(0, 100)
+  if acc <= accuracy:
+    dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                mod * random.randint(800, 1600) / 1000)
+    atktext = "opponent {} took {} damage!".format(botmon, dmg)
+    #apparently, dmg isnt brought out of the define block and is returned to 0 upon exiting.
+  else:
+    atktext = 'it missed!'
+  temphp = hpii - dmg
+  hpii = temphp
+  print(atktext)
+
+
+def omove(bruh, ehh):
+  acc = random.randint(0, 100)
+  botdmg = 0
+  if acc <= ehh:
+    botdmg = round((((((2 * 100) / 5) + 2) * bruh * atkii / defi) / 50 + 2) *
+                   mod * random.randint(800, 1600) / 1000)
+    atktext = "Your {} took {} damage!".format(mon, botdmg)
+
+  else:
+    atktext = 'It missed!'
+  print(atktext)
+
+
+def critical(critchance):
+  rad = random.randint(0, 100)
+  if rad < critchance:
+    mod += 1
+
+baseatki = atki
+basedefi = defi
+basespei = spei
+
+baseatkii = atkii
+basedefii = defii
+basespeii = speii
+yes = len("trainer {} has challenged BOT to a battle!".format(user.upper()))
+for i in range(yes):
+  dotline += '-'
+print(dotline)
+print("trainer {} has challenged BOT to a battle!".format(user.upper()))
+
+print("trainer {} sent out {}!".format(user.upper(), mon))
+print("trainer BOT sent out {}!".format(botmon))
+
+###################################################################################################
+
+if helditem == 'converter':
+  mod += 0.3
+
+# primal and
+if 'aqua rifle' in moveset:
+  if mon.startswith("prim") or mon.startswith(
+    "meta"):
+    rad = 0
+    for i in moveset:
+      if i == 'aqua rifle':
+        break
+      rad += 1
+    moveset[rad] = 'max hydro blaster'
+  if mon.startswith("prim"):
+    mon = "primordial" + mon[4:-1] + mon[-1]
+  if mon.startswith("meta"):
+    mon = "metamorph" + mon[4:-1] + mon[-1]
+
+if 'flare blitz' in moveset: 
+  if mon.startswith("prim") or mon.startswith(
+    "meta"):
+    rad = 0
+    for i in moveset:
+      if i == 'flare blitz':
+        break
+      rad += 1
+    moveset[rad] = 'max pyro burst'
+  if mon.startswith("prim"):
+    mon = "primordial" + mon[4:-1] + mon[-1]
+  if mon.startswith("meta"):
+    mon = "metamorph" + mon[4:-1] + mon[-1]
+
+if 'devour' in moveset:
+  if mon.startswith("prim") or mon.startswith(
+    "meta"):
+    rad = 0
+    for i in moveset:
+      if i == 'devour':
+        break
+      rad += 1
+    moveset[rad] = 'max engulfment'
+  if mon.startswith("prim"):
+    mon = "primordial" + mon[4:-1] + mon[-1]
+  if mon.startswith("meta"):
+    mon = "metamorph" + mon[4:-1] + mon[-1]
+
+if 'shadow force' in moveset:
+  if mon.startswith("prim") or mon.startswith(
+    "meta"):
+    rad = 0
+    for i in moveset:
+      if i == 'shadow force':
+        break
+      rad += 1
+    moveset[rad] = 'max starfall'
+  if mon.startswith("prim"):
+    mon = "primordial" + mon[4:-1] + mon[-1]
+  if mon.startswith("meta"):
+    mon = "metamorph" + mon[4:-1] + mon[-1]
+    
+botattack = True
+attack = True
+
+while hpi > 0 and hpii > 0:
+
+  if terrain in typing and weatherboosted == False:
+    weatherboosted = True
+    defi *= 1.15
+    atki *= 1.15
+    spei *= 1.15
+    
+
+  if terrain in bottyping and botweatherboosted == False:
+    botweatherboosted = True
+    defii *= 1.15
+    atkii *= 1.15
+    speii *= 1.15
+    
+    
+
+
+  if nightmaretick == 0:
+    botvalidmoves.append(nightmarelock)
+    moveset.append("nightmare")
+    nightmaretick = -2
+  elif nightmaretick != -2:
+    if 'nightmare' in moveset:
+      moveset.remove('nightmare')
+
+  if roosttick == True:
+    defi += basedefi * 0.4
+    roosttick = False
+  if hpi > totalhpi:
+    hpi = totalhpi
+  if hpii > totalhpii:
+    hpii = totalhpii
+  hpi = round(hpi)
+  hpii = round(hpii)
+  print(mon + ':', '{} / {}'.format(hpi, totalhpi))
+  print(botmon + ':', '{} / {}'.format(hpii, totalhpii))
+  hpholdi = hpi
+  hpholdii = hpii
+  if hpi < totalhpi / 3 and ability == 'desperado' and 'last resort' not in moveset:
+    moveset.append('last resort')
+  if helditem == 'rigged dice':
+    rng = 2
+  else:
+    rng = 0
+
+  move = ''
+  botmove = 'none'
+  
+  dmg = 0
+  botdmg = 0
+  #insert the thing below under the spei > speii later
+  if botmove == 'none' or spei > speii:
+    while True:
+      print(moveset)
+      if move != 'none':
+        move = input("What should {} do?: ".format(mon))
+        if not move.isdigit():
+          print("invalid number, select another.")
+
+        elif int(move) - 1 >= len(moveset):
+          print("invalid move number")
+    #elif int(move) < len(moveset):
+    #print("invalid move number")
+        else:
+          move = moveset[int(move) - 1]
+          break
+    if movecharge == True:
+      move = 'solar beam'
+    
+
+#-----------------------------------------------------------------------------------------
+
+#move checking------------------------------------------------------------
+  if confused == True:
+    rad = random.randint(1,100)
+    if rad <= 25:
+      attack = False
+      print(mon, "is in a daze!")
+    else:
+      attack = True
+      
+      
+  if attack == True:
+    if move == 'night slash':
+      movetype = 'dark'
+      power = 75
+      accuracy = 100 * evaii
+      rad = random.randint(0,2)
+      if rad == 0:
+        power += 70
+        print("night slash's damage was doubled!")
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+    #apparently, dmg isnt brought out of the define block and is returned to 0 upon exiting.
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+
+    elif move == 'nightmare':
+      nightmarelock = random.choice(botvalidmoves)
+      botvalidmoves.remove(nightmarelock)
+      nightmaretick = 2
+
+    elif move == 'misty terrain':
+      evai *= 0.85
+      evaii *= 0.85
+      print("A heavy mist settled around the field. (evasiveness has been increased for both sides)")
+
+    elif move == 'flair switch':
+      rad = atki
+      atki = defi
+      defi = rad
+      print("defence and attack were swapped!")
+
+    elif move == 'last resort':
+      movetype = 'normal'
+      power = 180
+      accuracy = 99999
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+      print(mon, 'hp was reduced to 1!')
+      hpi = 1
+
+    elif move == 'roost':
+      defi -= basedefi * 0.4
+      atki += baseatki * 0.25
+      print(mon, 'used', move)
+      print("{} defence was temporarily lowered!".format(mon))
+      print(mon, 'attack was increased!')
+      roosttick = True
+
+    elif move == 'rising talent':
+      print(mon, "used rising talent!")
+      if atki > defi and atki > spei:
+        atki += baseatki * 1.3
+        print("attack was increased")
+      elif defi > atki and defi > spei:
+        defi += basedefi * 1.3
+        print("defence was increased")
+      else:
+        spei += basespei * 1.3
+        print("speed was increased")
+        
+        
+        
+    
+
+    elif move == 'soundboom':
+      movetype = 'bug'
+      power = 55
+      accuracy = 80 * evaii
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+        botconfused = True
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+
+    elif move == 'The x-event':
+      movetype = 'hacks'
+      power = 555
+      accuracy = 10101
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+
+    elif move == 'mega horn':
+      movetype = 'bug'
+      power = 120
+      accuracy = 85 * evaii
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+
+    elif move == 'outspeed':
+      movetype = 'grass'
+      rad = (spei - speii) * 0.85
+      if rad < 20:
+        rad = 20
+      power = 100
+      accuracy = 100 * evaii
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * rad / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+
+
+    elif move == 'crush claw':
+      movetype = 'normal'
+      power = 70
+      accuracy = 100 * evaii
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!\nopponent's defence slightly decreased".format(botmon, dmg)
+        defii *= 0.95
+        
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      
+      print(atktext)
+
+    elif move == 'spiking punch':
+      movetype = 'fighting'
+      power = 45
+      accuracy = 100 * evaii
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+        atki += baseatki * 0.25
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print("damage was slightly increased")
+      print(atktext)
+
+    elif move == 'reversal':
+      movetype = 'ghost'
+      power = 85
+      accuracy = 100 * evaii
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round(
+          (((((2 * 100) / 5) + 2) * power * atkii / defii) / 50 + 2) * mod *
+          random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+
+    elif move == 'detect':
+      hpholdi = hpi
+      print(mon, 'protected itself!')
+
+    elif move == 'gambit':
+      rad = random.randint(-5, 10)
+      hpi += round(totalhpi * rad / 20)
+      if rad == 0:
+        print("Nothing happened!")
+      elif rad < 0:
+        print(mon, 'lost', round(totalhpi * rad / 20), 'hp!')
+      else:
+        print(mon, 'gained', round(totalhpi * rad / 20), 'hp!')
+
+    elif move == 'aqua rifle':
+      count = 0
+      chancemove = random.randint(2 + rng, 5)
+      movetype = 'water'
+      power = 22
+      accuracy = 100 * evaii
+      print(mon, 'used', move)
+      for i in range(chancemove):
+        if hpii < 0:
+          break
+        else:
+          acc = random.randint(0, 100)
+          if acc <= accuracy:
+            dmg = round(
+              (((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) * mod *
+              random.randint(800, 1600) / 1000)
+            atktext = "opponent {} took {} damage!".format(botmon, dmg)
+
+            count += 1
+            hpii = hpii - dmg
+            print(atktext)
+            time.sleep(1)
+
+      print("water bullets hit {} times!".format(count))
+
+    elif move == 'max hydro blaster':
+      count = 0
+      chancemove = random.randint(3 + rng, 6)
+      movetype = 'water'
+      power = 30
+      accuracy = 111 * evaii
+      print(mon, 'used', move)
+      for i in range(chancemove):
+        if hpii < 0:
+          break
+        else:
+          acc = random.randint(0, 100)
+          if acc <= accuracy:
+            dmg = round(
+              (((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) * mod *
+              random.randint(800, 1600) / 1000)
+            atktext = "opponent {} took {} damage!".format(botmon, dmg)
+
+            count += 1
+            hpii = hpii - dmg
+            print(atktext)
+            time.sleep(1)
+
+      print("water bullets hit {} times!".format(count))
+
+    elif move == 'dark aura':
+      movetype = 'dark'
+      power = 80
+      accuracy = 100
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+
+    elif move == 'close encounter':
+      movetype = 'fighting'
+      power = 135
+      accuracy = 100 * evaii
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+      print(mon, "defence fell")
+      defi *= 0.85
+
+    elif move == 'fade':
+      defi = defi / 1.15
+      atki *= 1.55
+      print(mon, "defence fell")
+      print(mon, "attack rose sharply")
+
+    elif move == 'haunt':
+      movetype = 'ghost'
+      power = 30
+      accuracy = 90 * evaii
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+        haunttick = 4
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+
+    elif move == 'luminary glare':
+      defii *= 0.9
+      evai *= 0.9
+      print("{} was blinded by a bright light, {}'s defence and accuracy dropped.".format(botmon,botmon))
+
+    elif move == 'surf':
+      movetype = 'water'
+      power = 90
+      accuracy = 100 * evaii
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+
+    elif move == 'max starfall':
+      movetype = 'dark'
+      power = 155 * (totalhpi - hpi + 75) / totalhpi
+      accuracy = 100 * evaii
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+
+    elif move == 'shadow force':
+      movetype = 'dark'
+      power = 140 * (totalhpi - hpi + 55) / totalhpi
+      accuracy = 100 * evaii
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+
+    elif move == 'radiant force':
+      movetype = 'fairy'
+      power = 140 * hpi / totalhpi + 13
+      accuracy = 100 * evaii
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+
+    elif move == 'sharpen':
+      print(mon, 'used', move)
+      atki *= 1.2
+      print(mon, "attack rose!")
+
+    elif move == 'flare blitz':
+      movetype = 'fire'
+      power = 145
+      accuracy = 100 * evaii
+      if timeboost > 0 and timeboost < 15:
+        power += 20
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      if timeboost > 0 and timeboost < 15:
+        hpi = round(hpi - dmg / 3.5)
+      else:
+        hpi = round(hpi - dmg / 3.5)
+      print(mon, 'used', move)
+      print(atktext)
+      print("{} took {} damage from the recoil!".format(mon, round(dmg / 3.5)))
+
+    elif move == 'max pyro burst':
+      movetype = 'fire'
+      power = 85
+      accuracy = 100
+      print(mon, 'used', move)
+      if timeboost > 0 and timeboost < 15:
+        power += 14
+      acc = random.randint(0, 100)
+      for i in range(2):
+        if acc <= accuracy:
+          dmg = round(
+            (((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) * mod *
+            random.randint(800, 1600) / 1000)
+          atktext = "opponent {} took {} damage!".format(botmon, dmg)
+          print(atktext)
+
+        else:
+          atktext = 'it missed!'
+        hpii = hpii - dmg
+        if timeboost > 0 and timeboost < 15:
+          hpi = round(hpi - dmg / 3)
+        else:
+          hpi = round(hpi - dmg / 3)
+
+        print("{} took {} damage from the recoil!".format(mon, round(dmg / 3)))
+
+    elif move == 'rocky blades':
+      count = 0
+      chancemove = random.randint(5 + rng, 10)
+      movetype = 'rock'
+      power = 13
+      accuracy = 90 * evaii
+      for i in range(chancemove):
+        if hpii < 0:
+          break
+        else:
+          acc = random.randint(0, 100)
+          if acc <= accuracy:
+            dmg = round(
+              (((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) * mod *
+              random.randint(800, 1600) / 1000)
+            atktext = "opponent {} took {} damage!".format(botmon, dmg)
+            count += 1
+            hpii = hpii - dmg
+            print(atktext)
+            time.sleep(1)
+
+      print("fragments from the ground hit {} times!".format(count))
+
+    elif move == 'guard build':
+      defi += basedefi * 0.25
+      print(mon, 'used', move + '!')
+      print(mon, 'defence rose!')
+
+    elif move == 'twister':
+      movetype = 'flying'
+      power = 110
+      accuracy = 90
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "Opponent {} took {} damage!".format(botmon, dmg)
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+
+    elif move == 'raw power':
+      movetype = 'fighting'
+      power = round((atki + defi + spei) / 5)
+      accuracy = 100
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = power
+        atktext = "Opponent {} took {} damage!".format(botmon, dmg)
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+
+    elif move == 'aeroblade':
+      movetype = 'flying'
+      power = 70
+      accuracy = 100  * evaii
+      acc = random.randint(0, 100)
+      rad = random.randint(0, 2)
+      if rad == 0:
+        power += 70
+        print("Aeroblade's damage was doubled!")
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "Opponent {} took {} damage!".format(botmon, dmg)
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+
+    elif move == 'devour':
+      defi *= 1.5
+      atki *= 1.5
+      hpi = hpi * 2 / 3
+      print(mon, "defence and attack were drastically increased!")
+      print(mon, 'health was cut by a third!')
+
+    elif move == 'max engulfment':
+      defi *= 1.75
+      atki *= 1.75
+      hpi = hpi * 1/2 - 9
+      print(mon, "defence and attack were drastically increased!")
+      print(mon, 'health was cut by half!')
+
+    elif move == 'solar beam':
+      if movecharge == False:
+        print(mon, "absorbs light.")
+        movecharge = True
+      else:
+        movetype = 'grass'
+        power = 145
+        accuracy = 100 * evaii
+        acc = random.randint(0, 100)
+        if acc <= accuracy:
+          dmg = round(
+            (((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) * mod *
+            random.randint(800, 1600) / 1000)
+          atktext = "opponent {} took {} damage!".format(botmon, dmg)
+        else:
+          atktext = 'it missed!'
+        hpii = hpii - dmg
+        print(mon, 'used', move)
+        print(atktext)
+
+        movecharge = False
+    elif move == 'retap':
+      movetype = 'normal'
+      power = 60
+      accuracy = 95 * evaii
+      acc = random.randint(0, 100)
+      power = power + retap
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(950, 1050) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+      else:
+        atktext = 'it missed!'
+      retap += 15
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+
+    elif move == 'recover':
+      rad = totalhpi / 4
+      hpi += totalhpi / 4
+      print(mon, "healed", rad, 'hp!')
+      recovercount += 1
+      if recovercount == 3:
+        moveset.remove("recover")
+
+    elif move == 'darkest night':
+      terrain = 'dark'
+      print("The sunlight dimmed and darkness enveloped the battlefield...")
+      time.sleep(1)
+      print("dark type beasts' stats are boosted")
+
+    elif move == 'acidic slime':
+      movetype = 'poison'
+      power = 0
+      accuracy = 80 * evaii
+      acc = random.randint(0, 100)
+      print(mon, 'used', move)
+
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(950, 1050) / 1000)
+        print(botmon,'was poisoned')
+        botpoisoned = True
+      else:
+        print("it missed!")
+      hpii = hpii - dmg
+      
+      
+
+    elif move == 'merciless':
+      movetype = 'poison'
+      power = 70
+      accuracy = 90 * evaii
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+        if hpii < totalhpii / 2:
+          dmg += dmg / 2
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+
+    elif move == 'scald':
+      movetype = 'water'
+      power = 70
+      accuracy = 100 * evaii
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        dmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "opponent {} took {} damage!".format(botmon, dmg)
+        count = random.randint(0, 100)
+        if count < 25:
+          botburned = True
+          time.sleep(1)
+          print(botmon, "is burnt by scald!")
+      else:
+        atktext = 'it missed!'
+      hpii = hpii - dmg
+      print(mon, 'used', move)
+      print(atktext)
+
+    if helditem == 'chime' and hpi != totalhpi:
+      hpi += round((hpholdii - hpii) * 1 / 6)
+      print("{} was healed by {} hp!".format(mon,
+                                             round((hpholdii - hpii) * 1 / 6)))
+
+    move = 'none'
+#bot code----------------------------------------------------------------------------------------------------
+
+  time.sleep(1)
+  botmove = random.choice(botvalidmoves)
+  if hpii < 1:
+    break
+
+  elif botconfused == True:
+    rad = random.randint(1,100)
+    if rad < 26:
+      botattack = False
+      print(botmon, "is in a daze!")
+    else:
+      botattack = True
+      
+      
+  if botattack == True:
+
+    
+    if botmove == 'flamethrower':
+      movetype = 'fire'
+      power = 90
+      accuracy = 100 * evai
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        botdmg = round(
+          (((((2 * 100) / 5) + 2) * power * atkii / defi) / 50 + 2) * botmod *
+          random.randint(800, 1600) / 1000)
+        atktext = "Your {} took {} damage!".format(mon, botdmg)
+      else:
+        atktext = 'it missed!'
+      hpi = hpi - botdmg
+      print(botmon, 'used', botmove)
+      print(atktext)
+
+    elif botmove == 'guard build':
+      defii += basedefii * 0.25
+      print(botmon, 'used', botmove + '!')
+      print(botmon, 'defence rose!')
+
+    elif botmove == 'surf':
+      movetype = 'water'
+      power = 90
+      accuracy = 100 * evai
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        botdmg = round(
+          (((((2 * 100) / 5) + 2) * power * atkii / defi) / 50 + 2) * botmod *
+          random.randint(800, 1600) / 1000)
+        atktext = "Your {} took {} damage!".format(mon, botdmg)
+      else:
+        atktext = 'it missed!'
+      hpi = hpi - botdmg
+      print(botmon, 'used', botmove)
+      print(atktext)
+
+    elif botmove == 'mega horn':
+      movetype = 'bug'
+      power = 120
+      accuracy = 85 * evai
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        botdmg = round(
+          (((((2 * 100) / 5) + 2) * power * atkii / defi) / 50 + 2) * botmod *
+          random.randint(800, 1600) / 1000)
+        atktext = "Your {} took {} damage!".format(mon, botdmg)
+      else:
+        atktext = 'it missed!'
+      hpi = hpi - botdmg
+      print(botmon, 'used', botmove)
+      print(atktext)
+
+    elif botmove == 'twister':
+      movetype = 'flying'
+      power = 100
+      accuracy = 90 * evai
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        botdmg = round(
+          (((((2 * 100) / 5) + 2) * power * atkii / defi) / 50 + 2) * botmod *
+          random.randint(800, 1600) / 1000)
+        atktext = "Your {} took {} damage!".format(mon, botdmg)
+      else:
+        atktext = 'it missed!'
+      hpi = hpi - botdmg
+      print(botmon, 'used', botmove)
+      print(atktext)
+
+    elif botmove == 'body press':
+      movetype = 'fighting'
+      power = 95
+      accuracy = 95 * evai
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        botdmg = round(
+          (((((2 * 100) / 5) + 2) * power * defii / defi) / 50 + 2) * botmod *
+          random.randint(800, 1600) / 1000)
+        atktext = "Your {} took {} damage!".format(mon, botdmg)
+      else:
+        atktext = 'it missed!'
+      hpi = hpi - botdmg
+      print(botmon, 'used', botmove)
+      print(atktext)
+
+    elif botmove == 'dark aura':
+      movetype = 'dark'
+      power = 80
+      accuracy = 100
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        botdmg = round((((((2 * 100) / 5) + 2) * power * atkii / defi) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "Your {} took {} damage!".format(mon, botdmg)
+      else:
+        atktext = 'it missed!'
+      hpi = hpi - botdmg
+      print(botmon, 'used', botmove)
+      print(atktext)
+
+    elif botmove == 'supplex':
+      movetype = 'fighting'
+      power = defi
+      accuracy = 90 * evai
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        botdmg = round(
+          (((((2 * 100) / 5) + 2) * power * defi / defi) / 50 + 2) * botmod *
+          random.randint(800, 1600) / 1000)
+        atktext = "Your {} took {} damage!".format(mon, botdmg)
+      else:
+        atktext = 'it missed!'
+      hpi = hpi - botdmg
+      print(botmon, 'used', botmove)
+      print(atktext)
+
+    elif botmove == 'detect':
+      print(botmon, 'used', botmove)
+      print(botmon, 'protected itself!')
+
+    elif botmove == 'sharpen':
+      print(botmon, 'used', botmove)
+      atkii *= 1.2
+      print(botmon, "attack rose!")
+
+    elif botmove == 'rain dance':
+      terrain = 'water'
+      print("clouds covered the sky and water started pouring down")
+      time.sleep(1)
+      print("water type beasts' stats are boosted")
+
+    elif botmove == 'fire dance':
+      terrain = 'fire'
+      print("The clouds parted. Intense sunlight burns through the atmosphere")
+      time.sleep(1)
+      print("fire type beasts' stats are boosted")
+
+    elif botmove == 'close encounter':
+      movetype = 'fighting'
+      power = 135
+      accuracy = 100 * evai
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        botdmg = round(
+          (((((2 * 100) / 5) + 2) * power * atkii / defi) / 50 + 2) * botmod *
+          random.randint(800, 1600) / 1000)
+        atktext = "Your {} took {} damage!".format(mon, botdmg)
+      else:
+        atktext = 'it missed!'
+      hpi = hpi - botdmg
+      print(botmon, 'used', botmove)
+      print(atktext)
+      print(botmon, "defence fell")
+      defii = defii / 1.2
+
+    elif botmove == 'merciless':
+      movetype = 'poison'
+      power = 70
+      accuracy = 90 * evai
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        botdmg = round(
+          (((((2 * 100) / 5) + 2) * power * atkii / defi) / 50 + 2) * botmod *
+          random.randint(800, 1600) / 1000)
+        atktext = "Your {} took {} damage!".format(mon, botdmg)
+        if hpi < totalhpi / 2:
+          botdmg += botdmg / 3
+      else:
+        atktext = 'it missed!'
+      hpi = hpi - botdmg
+      print(botmon, 'used', botmove)
+      print(atktext)
+
+    elif botmove == 'acidic slime':
+      movetype = 'poison'
+      power = 0
+      accuracy = 80 * evai
+      acc = random.randint(0, 100)
+      print(botmon, 'used', botmove)
+
+      if acc <= accuracy:
+        botdmg = round((((((2 * 100) / 5) + 2) * power * atki / defii) / 50 + 2) *
+                    mod * random.randint(950, 1050) / 1000)
+        print(mon,'was poisoned')
+        poisoned = True
+      else:
+        print('it missed!')
+      hpi = hpi - botdmg
+
+    elif botmove == 'amnesia':
+      print(botmon,"used", botmove)
+      atki = baseatki
+      defi = basedefi
+      spdi = basespei
+      atkii = baseatkii
+      defii = basedefii
+      speii = basespeii
+      print("all stat changes were reset for both sides!")
+    
+    elif botmove == 'absorb':
+      movetype = 'grass'
+      rad = totalhpii /10
+      hpii += rad
+      print(botmon, 'used', botmove)
+      print("{} recovered {} hp!".format(botmon, rad))
+
+    elif botmove == 'gust':
+      movetype = 'flying'
+      power = 50
+      accuracy = 100 * evai
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        botdmg = round(
+          (((((2 * 100) / 5) + 2) * power * atkii / defi) / 50 + 2) * botmod *
+          random.randint(800, 1600) / 1000)
+        atktext = "Your {} took {} damage!".format(mon, botdmg)
+        count = random.randint(0, 100)
+        hpii += botdmg / 2 
+        print(botmon, 'used', botmove)
+        print(botmon,'recovered {} hp!'.format(botdmg/2))
+        
+      else:
+        atktext = 'it missed!'
+      hpi = hpi - botdmg
+      
+      
+      print(atktext)
+
+    elif botmove == 'crunch':
+      movetype = 'water'
+      power = 80
+      accuracy = 100 * evai
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        botdmg = round(
+          (((((2 * 100) / 5) + 2) * power * atkii / defi) / 50 + 2) * botmod *
+          random.randint(800, 1600) / 1000)
+        atktext = "Your {} took {} damage!".format(mon, botdmg)
+        count = random.randint(0, 100)
+        hpii += botdmg / 2 
+        print(botmon, 'used', botmove)
+        print(botmon,'recovered {} hp!'.format(botdmg/2))
+        
+      else:
+        atktext = 'it missed!'
+      hpi = hpi - botdmg
+      
+      
+      print(atktext)
+
+    elif botmove == 'intimidate':
+      atki *= 0.8
+      print(botmon, 'used', botmove)
+      print(mon + "'s attack decreased!")
+
+    elif botmove == 'jet rush':
+      movetype = 'water'
+      power = 145
+      accuracy = 100 * evai
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        botdmg = round(
+          (((((2 * 100) / 5) + 2) * power * atkii / defi) / 50 + 2) * botmod *
+          random.randint(800, 1600) / 1000)
+        atktext = "Your {} took {} damage!".format(mon, botdmg)
+        defii *= 0.75
+      else:
+        atktext = 'it missed!'
+      hpi = hpi - botdmg
+      print(botmon, 'used', botmove)
+      print(atktext)
+      print(botmon + "'s defence sharply decreased!")
+      
+      
+    elif botmove == 'scald':
+      movetype = 'water'
+      power = 70
+      accuracy = 100 * evai
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        botdmg = round(
+          (((((2 * 100) / 5) + 2) * power * atkii / defi) / 50 + 2) * botmod *
+          random.randint(800, 1600) / 1000)
+        atktext = "Your {} took {} damage!".format(mon, botdmg)
+        count = random.randint(0, 100)
+        if count < 25:
+          burned = True
+          print(mon, "is burnt by scald!")
+      else:
+        atktext = 'it missed!'
+      hpi = hpi - botdmg
+      print(botmon, 'used', botmove)
+      print(atktext)
+
+    elif botmove == 'fire spin':
+      movetype = 'fire'
+      power = 50
+      accuracy = 95 * evai
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        botdmg = round(
+          (((((2 * 100) / 5) + 2) * power * atkii / defi) / 50 + 2) * botmod *
+          random.randint(800, 1600) / 1000)
+        atktext = "Your {} took {} damage!".format(mon, botdmg)
+        count = random.randint(0, 100)
+        if count < 50:
+          time.sleep(1)
+          burned = True
+          print(mon, "is burnt by fire spin!")
+      else:
+        atktext = 'it missed!'
+      hpi = hpi - botdmg
+      print(botmon, 'used', botmove)
+      print(atktext)
+
+    elif botmove == 'whirlwind':
+      movetype = 'flying'
+      power = 65
+      accuracy = 80 * evaii
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        botdmg = round((((((2 * 100) / 5) + 2) * power * atkii / defi) / 50 + 2) *
+                    mod * random.randint(800, 1600) / 1000)
+        atktext = "{} took {} damage!".format(mon, botdmg)
+        confused = True
+      else:
+        atktext = 'it missed!'
+      hpi = hpi - botdmg
+      print(botmon, 'used', botmove)
+      print(atktext)
+
+    elif botmove == 'smoking pound':
+      movetype = 'fire'
+      power = 60
+      accuracy = 100 * evai
+      acc = random.randint(0, 100)
+      if acc <= accuracy:
+        botdmg = round(
+          (((((2 * 100) / 5) + 2) * power * atkii / defi) / 50 + 2) * botmod *
+          random.randint(800, 1600) / 1000)
+        atktext = "Your {} took {} damage!".format(mon, botdmg)
+        count = random.randint(0, 100)
+        if count < 20:
+          burned = True
+          print(mon, "is burnt by smoking pound!")
+
+       
+      else:
+        atktext = 'it missed!'
+      hpi = hpi - botdmg
+      print(botmon, 'used', botmove)
+      print(atktext)
+
+    elif botmove == 'retap':
+      movetype = 'normal'
+      power = 60
+      accuracy = 95 * evai
+      acc = random.randint(0, 100)
+      power = power + retap
+      if acc <= accuracy:
+        botdmg = round(
+          (((((2 * 100) / 5) + 2) * power * atkii / defi) / 50 + 2) * mod *
+          random.randint(950, 1050) / 1000)
+        atktext = "opponent {} took {} damage!".format(mon, botdmg)
+      else:
+        atktext = 'it missed!'
+      botretap += 10
+      hpi = hpi - botdmg
+      print(botmon, 'used', botmove)
+      print(atktext)
+
+    
+
+    
+  if detectcheck == True:
+    moveset.insert(detectindex, 'detect')
+    detectcheck = False
+    
+  if move == 'detect':
+    hpi = hpholdi
+    detectcheck = True
+    detectindex = int(moveset.index("detect"))
+    moveset.remove("detect")
+    
+  if botmove == 'detect':
+    hpii = hpholdii
+    botdetectcheck = True
+    
+
+  if haunttick != 0:
+    haunttick -= 1
+    hpii = hpii - round(5 / 100 * totalhpii)
+
+    print("{} is bombarded by spirits and lost {} hp!".format(
+      botmon, round(5 / 100 * totalhpii)))
+
+  if helditem == 'scraps' and hpi < totalhpi * 15 / 16:
+    hpi += round(totalhpi * 1 / 18)
+    print("{} ate from the scraps and recovered {} hp".format(
+      mon, round(totalhpi * 1 / 16)))
+  elif helditem == 'converter' and dmg != 0:
+    hpi = hpi * 19 / 20
+    print(
+      "damage dealt by {} has been increased thanks to the converter.\nSome hp was lost"
+      .format(mon))
+  elif helditem == 'cherry' and hpi < 1/3 * totalhpi:
+    helditem = 'none'
+    hpi += totalhpi * 1/4
+    print("The cherry was consumed!")
+
+  elif helditem == 'weak armor' and totalhpi != hpi:
+    print("The weak armor shattered!")
+    hpi = totalhpi
+    helditem = 'none'
+
+  if botpoisoned == True:
+    hpii -= totalhpii * 1 / 20
+    print(botmon, "took damage due to poison")
+  if poisoned == True:
+    hpi -= totalhpi * 1 / 20
+    print(mon, 'took damage due to poison')
+
+  if botburned == True:
+    hpii -= totalhpii * 1 / 20
+    print(botmon, "took damage due to burn")
+  if burned == True:
+    hpi -= totalhpi * 1 / 20
+    print(mon, 'took damage due to burn')
+
+  if ability == 'final stretch' and hpi <= totalhpi/2 and hpii <= totalhpii/2:
+    atki *= 1.25
+    defi *= 1.25
+    print("The end is coming, {}'s attack and defence increased by 1.25x.'".format(mon))
+    ability = 'none'
+
+
+  print(dotline)
+  time.sleep(1)
+  move = ''
+  botmove = ''
+    
+replit.db['chamberitems'] = chamberitems
+
+if hpii < 1:
+  print(user.upper(), "is the winner!")
+  rad = random.randint(0, 1000)
+  if rad < 1001:
+    if npc.isnumeric():
+      npc = int(npc)
+      if int(npc) < 4:
+        
+        rad = random.randint((npc), (npc))
+      else:
+        rad = random.randint(round(npc * 0.65), npc)
+    else:
+      rad = random.randint(2,6)
+      
+    
+    shards += rad
+    replit.db['shards'] = shards
+    print(" - obtained {} shards".format(rad))
+  rad = random.randint(0, 1000)
+  print(rad)
+  if rad < 999:
+    chamberitems[0] = chamberitems[0] + 1
+    print(" - Obtained a primordial shard")
+
+  npc = str(npc)
+
+  if npc == '1':
+    npcstatus.append('1beaten')
+
+  elif npc == '2':
+    npcstatus.append('2beaten')
+
+  elif npc == '3':
+    npcstatus.append('3beaten')
+
+  elif npc == '4':
+    npcstatus.append('4beaten')
+
+  elif npc == '5':
+    npcstatus.append('5beaten')
+
+  elif npc == '6':
+    npcstatus.append('6beaten')
+
+  elif npc == '7':
+    npcstatus.append('7beaten')
+
+  elif npc == '8':
+    npcstatus.append('8beaten')
+
+  elif npc == '9':
+    npcstatus.append('9beaten')
+
+  if npc == 'battle 201':
+    rad = 'prim lobster'
+    monsunlocked.append(rad)
+    print("CONGRATULATIONS! YOU UNLOCKED THE {} BEAST! (type prim [beast name] to use this form)".format(rad))
+    
+  elif npc == 'battle 202':
+    rad = 'prim salamander'
+    monsunlocked.append(rad)
+    print("CONGRATULATIONS! YOU UNLOCKED THE {} BEAST! (type prim [beast name] to use this form)".format(rad))
+
+  elif npc == 'battle 203':
+    rad = 'prim snail'
+    monsunlocked.append(rad)
+    print("CONGRATULATIONS! YOU UNLOCKED THE {} BEAST! (type prim [beast name] to use this form)".format(rad))
+
+  elif npc == 'battle 210':
+    rad = 'rabbit'
+    monsunlocked.append(rad)
+    print("CONGRATULATIONS! YOU UNLOCKED THE {} BEAST!".format(rad))
+
+elif hpi < 1:
+  print("BOT is the winner!")
+
+replit.db['npcstatus'] = npcstatus
+replit.db['monsunlocked'] = monsunlocked
