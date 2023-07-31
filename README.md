@@ -1,2 +1,3 @@
 # beast-arena
-hi
+hi, this it eh awesome game link
+https://replit.com/@projecthorror/Beast-arena
